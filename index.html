@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elaman Mirzabekov - GameDev Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0a0a16;
+            --secondary: #121228;
+            --tertiary: #1a1a3a;
+            --accent: #6c5ce7;
+            --accent-light: #857be3;
+            --accent-dark: #4a36e6;
+            --text-primary: #ffffff;
+            --text-secondary: #d0d0e2;
+            --accent-glow: 0 0 10px rgba(108, 92, 231, 0.5), 0 0 20px rgba(108, 92, 231, 0.3);
+            --accent-glow-strong: 0 0 15px rgba(108, 92, 231, 0.7), 0 0 30px rgba(108, 92, 231, 0.4);
+            --card-bg: rgba(26, 26, 58, 0.9);
+            --transition-slow: 0.5s ease;
+            --transition-fast: 0.3s ease;
+            --border-radius: 12px;
+        }
+
+        [data-theme="light"] {
+            --primary: #f0f0ff;
+            --secondary: #e0e0f0;
+            --tertiary: #d0d0e8;
+            --text-primary: #0a0a16;
+            --text-secondary: #34344e;
+            --card-bg: rgba(240, 240, 255, 0.95);
+            --accent-glow: 0 0 10px rgba(108, 92, 231, 0.3), 0 0 20px rgba(108, 92, 231, 0.2);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            perspective: 1000px;
+            transition: background-color var(--transition-slow);
+        }
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Tech background */
+        .tech-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(74, 54, 230, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(108, 92, 231, 0.15) 0%, transparent 40%),
+                linear-gradient(var(--tertiary) 1px, transparent 1px),
+                linear-gradient(90deg, var(--tertiary) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 20px 20px, 20px 20px;
+            z-index: -3;
+            opacity: 0.7;
+            transition: transform 0.1s linear, background var(--transition-slow);
+        }
+
+        /* Grid overlay with animation */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(transparent 95%, rgba(108, 92, 231, 0.03) 96%),
+                linear-gradient(90deg, transparent 95%, rgba(108, 92, 231, 0.03) 96%);
+            background-size: 40px 40px;
+            z-index: -2;
+            opacity: 0.3;
+            animation: gridMove 20s infinite linear;
+            transition: opacity var(--transition-slow);
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 40px; }
+        }
+
+        /* Racing line animation */
+        .racing-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-light), transparent);
+            box-shadow: var(--accent-glow);
+            animation: raceLine 2.5s linear infinite;
+            z-index: 999;
+            opacity: 0.8;
+        }
+
+        @keyframes raceLine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Section styling */
+        section {
+            min-height: 100vh;
+            padding: 80px 5%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Navigation */
+        .nav-dots {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            margin: 15px 0;
+            border: 2px solid var(--text-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            transition: all var(--transition-fast);
+        }
+
+        .dot.active {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            box-shadow: var(--accent-glow);
+        }
+
+        .dot::after {
+            content: attr(data-section);
+            position: absolute;
+            top: 50%;
+            right: 100%;
+            transform: translateY(-50%);
+            color: var(--text-primary);
+            font-size: 12px;
+            margin-right: 15px;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+            background: rgba(10, 10, 22, 0.8);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .dot:hover::after {
+            opacity: 1;
+        }
+
+        /* Main navigation */
+        .main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 10, 22, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(108, 92, 231, 0.2);
+        }
+
+        .nav-logo {
+            font-family: 'Racing Sans One', cursive;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 8px 12px;
+            border-radius: 30px;
+            transition: all var(--transition-fast);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-light);
+            box-shadow: var(--accent-glow);
+            background: rgba(108, 92, 231, 0.1);
+        }
+
+        .theme-toggle, .language-toggle {
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+
+        .theme-toggle:hover, .language-toggle:hover {
+            box-shadow: var(--accent-glow);
+            transform: rotate(30deg);
+        }
+
+        /* Mobile menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Home section */
+        #home {
+            text-align: center;
+            position: relative;
+        }
+
+        .title-container {
+            position: relative;
+            margin-bottom: 3rem;
+            overflow: hidden;
+        }
+
+        .title {
+            font-family: 'Racing Sans One', cursive;
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: transparent;
+            background: linear-gradient(90deg, var(--text-primary), var(--accent-light), var(--text-primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            position: relative;
+            animation: titleReveal 1.5s forwards;
+            opacity: 0;
+            transform: translateY(50px) rotateX(90deg);
+            transform-origin: center bottom;
+        }
+
+        @keyframes titleReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        .subtitle {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            margin-bottom: 2rem;
+            color: var(--accent-light);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 500;
+            opacity: 0;
+            animation: subtitleReveal 1.2s 0.8s forwards;
+        }
+
+        @keyframes subtitleReveal {
+            to {
+                opacity: 1;
+                text-shadow: var(--accent-glow);
+            }
+        }
+
+        .tech-badge {
+            display: inline-block;
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            border-radius: 30px;
+            padding: 8px 16px;
+            margin: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: var(--accent-glow);
+            opacity: 0;
+            animation: badgeReveal 0.8s 1.5s forwards;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .tech-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--accent-glow-strong);
+        }
+
+        @keyframes badgeReveal {
+            to { opacity: 1; }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-secondary);
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            opacity: 0;
+            animation: fadeIn 1s 2s forwards;
+        }
+
+        .scroll-indicator::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 40px;
+            background: var(--accent);
+            box-shadow: var(--accent-glow);
+            animation: scrollLine 2s infinite;
+        }
+
+        @keyframes scrollLine {
+            0% { height: 0; opacity: 0; }
+            50% { height: 40px; opacity: 1; }
+            100% { height: 0; opacity: 0; }
+        }
+
+        /* About section */
+        #about {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            margin-bottom: 3rem;
+            color: var(--accent-light);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: var(--accent-glow);
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: sectionTitleReveal 1s forwards;
+        }
+
+        @keyframes sectionTitleReveal {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: textReveal 0.8s forwards;
+        }
+
+        .about-text p:nth-child(1) { animation-delay: 0.3s; }
+        .about-text p:nth-child(2) { animation-delay: 0.6s; }
+
+        @keyframes textReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-item {
+            background: var(--card-bg);
+            padding: 20px;
+            border: 1px solid transparent;
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: skillReveal 0.8s forwards;
+            cursor: pointer;
+        }
+
+        .skill-item:nth-child(1) { animation-delay: 0.3s; }
+        .skill-item:nth-child(2) { animation-delay: 0.5s; }
+        .skill-item:nth-child(3) { animation-delay: 0.7s; }
+        .skill-item:nth-child(4) { animation-delay: 0.9s; }
+
+        @keyframes skillReveal {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .skill-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(108, 92, 231, 0.1), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .skill-item:hover {
+            border-color: var(--accent);
+            box-shadow: var(--accent-glow);
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .skill-item:hover::before {
+            left: 100%;
+        }
+
+        .skill-item h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--accent-light);
+            text-transform: uppercase;
+        }
+
+        .skill-item p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Experience section */
+        #experience {
+            min-height: 100vh;
+            padding: 80px 5%;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 50px auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            width: 2px;
+            height: 100%;
+            background: var(--accent);
+            box-shadow: var(--accent-glow);
+        }
+
+        .timeline-item {
+            width: 100%;
+            padding: 20px 0 20px 50px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .timeline-content {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(108, 92, 231, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all var(--transition-fast);
+        }
+
+        .timeline-content:hover {
+            border-color: var(--accent);
+            box-shadow: var(--accent-glow);
+            transform: translateY(-5px);
+        }
+
+        .timeline-date {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-light);
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .timeline-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: var(--accent-glow);
+            transform: translateY(-50%);
+        }
+
+        /* Contact section */
+        #contact {
+            text-align: center;
+            min-height: 100vh;
+            padding: 80px 5%;
+        }
+
+        .contact-info {
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
+            margin: 40px 0;
+            opacity: 0;
+            animation: contactReveal 1s 0.5s forwards;
+        }
+
+        @keyframes contactReveal {
+            to { opacity: 1; }
+        }
+
+        .email-link {
+            display: inline-block;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            padding: 12px 25px;
+            border: 2px solid var(--accent);
+            border-radius: var(--border-radius);
+            background: var(--card-bg);
+            box-shadow: var(--accent-glow);
+            transition: all var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: emailReveal 1s 1s forwards;
+        }
+
+        @keyframes emailReveal {
+            to { opacity: 1; }
+        }
+
+        .email-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(108, 92, 231, 0.2), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .email-link:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--accent-glow-strong);
+        }
+
+        .email-link:hover::before {
+            left: 100%;
+        }
+
+        /* Visitor counter */
+        .visitor-counter {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            border-radius: var(--border-radius);
+            padding: 10px 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            box-shadow: var(--accent-glow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .visitor-counter i {
+            color: var(--accent-light);
+        }
+
+        /* Animation controls */
+        .animation-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--accent);
+            box-shadow: var(--accent-glow);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+            box-shadow: var(--accent-glow-strong);
+        }
+
+        /* Particle effects */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: var(--accent-light);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 10s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 992px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(10, 10, 22, 0.9);
+                flex-direction: column;
+                padding: 20px;
+                backdrop-filter: blur(10px);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-dots {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 100px 5%;
+            }
+            
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .visitor-counter {
+                bottom: 70px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-nav {
+                padding: 10px 15px;
+            }
+            
+            .nav-logo {
+                font-size: 1.5rem;
+            }
+            
+            .theme-toggle, .language-toggle {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .tech-badge {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+            
+            .timeline-item {
+                padding-left: 40px;
+            }
+            
+            .timeline-item::after {
+                left: 5px;
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        /* Utility classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, var(--text-primary), var(--accent-light), var(--text-primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .glow-text {
+            text-shadow: var(--accent-glow);
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-bg"></div>
+    <div class="grid-overlay"></div>
+    <div class="racing-line"></div>
+    <div class="particles" id="particles"></div>
+    
+    <nav class="main-nav">
+        <a href="#" class="nav-logo">EM</a>
+        <div class="nav-links" id="navLinks">
+            <a href="#home" class="nav-link active" data-translate="nav.home">Главная</a>
+            <a href="#about" class="nav-link" data-translate="nav.about">Обо мне</a>
+            <a href="#experience" class="nav-link" data-translate="nav.experience">Опыт</a>
+            <a href="#contact" class="nav-link" data-translate="nav.contact">Контакты</a>
+            <button class="language-toggle" id="languageToggle">
+                <i class="fas fa-globe"></i>
+            </button>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+    
+    <div class="nav-dots">
+        <div class="dot active" data-section="home"></div>
+        <div class="dot" data-section="about"></div>
+        <div class="dot" data-section="experience"></div>
+        <div class="dot" data-section="contact"></div>
+    </div>
+    
+    <section id="home">
+        <div class="section-content">
+            <div class="title-container">
+                <h1 class="title">Elaman Mirzabekov</h1>
+                <p class="subtitle" data-translate="home.subtitle">Разработчик игр & Эксперт Unity</p>
+            </div>
+            
+            <div>
+                <span class="tech-badge">Разработка на Unity</span>
+                <span class="tech-badge">Программирование на C#</span>
+                <span class="tech-badge">Игровая логика</span>
+                <span class="tech-badge">UI/UX системы</span>
+                <span class="tech-badge">Оптимизация</span>
+                <span class="tech-badge">Game Design</span>
+            </div>
+            
+            <div class="scroll-indicator" data-translate="home.scroll">Прокрутите вниз</div>
+        </div>
+    </section>
+    
+    <section id="about">
+        <div class="section-content">
+            <h2 class="section-title" data-translate="about.title">Обо мне</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p data-translate="about.p1">Я целеустремленный разработчик игр, специализирующийся на создании проектов в Unity. Мой профессиональный путь начался в 2024 году с глубокого изучения принципов программирования и основ геймдева. С первых дней я сосредоточился на освоении C# и возможностей игрового движка Unity.</p>
+                    <p data-translate="about.p2">Благодаря системному подходу к обучению и практике, я быстро освоил ключевые аспекты разработки: создание игровой логики, проектирование пользовательских интерфейсов и оптимизацию производительности. Моя цель — создание качественных игровых продуктов с продуманной архитектурой и современными решениями.</p>
+                    <p data-translate="about.p3">В постоянном развитии я уделяю внимание изучению передовых методик разработки, анализу успешных игровых проектов и совершенствованию навыков в области игрового дизайна и проектирования пользовательского опыта.</p>
+                </div>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <h3 data-translate="skills.unity">Разработка на Unity</h3>
+                        <p data-translate="skills.unity_desc">Полный цикл разработки игровых проектов</p>
+                    </div>
+                    <div class="skill-item">
+                        <h3 data-translate="skills.csharp">Программирование на C#</h3>
+                        <p data-translate="skills.csharp_desc">Оптимизированный и структурированный код</p>
+                    </div>
+                    <div class="skill-item">
+                        <h3 data-translate="skills.ui">UI/UX системы</h3>
+                        <p data-translate="skills.ui_desc">Создание интуитивных интерфейсов</p>
+                    </div>
+                    <div class="skill-item">
+                        <h3 data-translate="skills.design">Game Design</h3>
+                        <p data-translate="skills.design_desc">Проектирование игровых механик</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="experience">
+        <div class="section-content">
+            <h2 class="section-title" data-translate="experience.title">Опыт и развитие</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2025 - Настоящее время</div>
+                        <h3 class="timeline-title" data-translate="experience.job1.title">Профессиональный разработчик Unity</h3>
+                        <p class="timeline-desc" data-translate="experience.job1.desc">Создание полных игровых проектов, реализация сложной игровой механики и архитектурных решений.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2024 - 2025</div>
+                        <h3 class="timeline-title" data-translate="experience.job2.title">Активное изучение Unity и C#</h3>
+                        <p class="timeline-desc" data-translate="experience.job2.desc">Глубокое освоение игрового движка Unity, языка программирования C# и основ геймдев-разработки.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2024</div>
+                        <h3 class="timeline-title" data-translate="experience.job3.title">Начало пути в программировании</h3>
+                        <p class="timeline-desc" data-translate="experience.job3.desc">Изучение основ программирования и принципов разработки программного обеспечения.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="contact">
+        <div class="section-content">
+            <h2 class="section-title" data-translate="contact.title">Свяжитесь со мной</h2>
+            <div class="contact-info">
+                <p data-translate="contact.message">Заинтересованы в сотрудничестве или есть проект?</p>
+            </div>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=elmangamedevtools@gmail.com&su=Предложение о сотрудничестве&body=Здравствуйте, Эламан! Я заинтересован в ваших услугах разработчика..." 
+               target="_blank" class="email-link" data-translate="contact.email">
+                Написать на почту
+            </a>
+        </div>
+    </section>
+    
+    <div class="visitor-counter">
+        <i class="fas fa-users"></i>
+        <span id="visitorCount">0</span> <span data-translate="visitors">посетителей</span>
+    </div>
+    
+    <div class="animation-controls">
+        <button class="control-btn" id="particlesToggle">
+            <i class="fas fa-star"></i>
+        </button>
+    </div>
+
+    <script>
+        // Language support
+        const translations = {
+            en: {
+                "nav.home": "Home",
+                "nav.about": "About",
+                "nav.experience": "Experience",
+                "nav.contact": "Contact",
+                "home.subtitle": "Game Developer & Unity Expert",
+                "home.scroll": "Scroll to explore",
+                "about.title": "About Me",
+                "about.p1": "I am a dedicated game developer specializing in creating projects in Unity. My professional journey began in 2024 with an in-depth study of programming principles and game development fundamentals. From the very beginning, I focused on mastering C# and the capabilities of the Unity game engine.",
+                "about.p2": "Thanks to a systematic approach to learning and practice, I quickly mastered key aspects of development: creating game logic, designing user interfaces, and performance optimization. My goal is to create quality game products with well-thought-out architecture and modern solutions.",
+                "about.p3": "In continuous development, I pay attention to the study of advanced development methodologies, analysis of successful game projects, and improvement of skills in game design and user experience design.",
+                "skills.unity": "Unity Development",
+                "skills.unity_desc": "Full cycle of game project development",
+                "skills.csharp": "C# Programming",
+                "skills.csharp_desc": "Optimized and structured code",
+                "skills.ui": "UI/UX Systems",
+                "skills.ui_desc": "Creating intuitive interfaces",
+                "skills.design": "Game Design",
+                "skills.design_desc": "Designing game mechanics",
+                "experience.title": "Experience & Development",
+                "experience.job1.title": "Professional Unity Developer",
+                "experience.job1.desc": "Creating complete game projects, implementing complex game mechanics and architectural solutions.",
+                "experience.job2.title": "Active Learning of Unity and C#",
+                "experience.job2.desc": "In-depth mastering of the Unity game engine, C# programming language and game development basics.",
+                "experience.job3.title": "Beginning of Programming Journey",
+                "experience.job3.desc": "Learning programming basics and software development principles.",
+                "contact.title": "Get In Touch",
+                "contact.message": "Interested in cooperation or have a project?",
+                "contact.email": "Write to email",
+                "visitors": "visitors"
+            },
+            ru: {
+                "nav.home": "Главная",
+                "nav.about": "Обо мне",
+                "nav.experience": "Опыт",
+                "nav.contact": "Контакты",
+                "home.subtitle": "Разработчик игр & Эксперт Unity",
+                "home.scroll": "Прокрутите вниз",
+                "about.title": "Обо мне",
+                "about.p1": "Я целеустремленный разработчик игр, специализирующийся на создании проектов в Unity. Мой профессиональный путь начался в 2024 году с глубокого изучения принципов программирования и основ геймдева. С первых дней я сосредоточился на освоении C# и возможностей игрового движка Unity.",
+                "about.p2": "Благодаря системному подходу к обучению и практике, я быстро освоил ключевые аспекты разработки: создание игровой логики, проектирование пользовательских интерфейсов и оптимизацию производительности. Моя цель — создание качественных игровых продуктов с продуманной архитектурой и современными решениями.",
+                "about.p3": "В постоянном развитии я уделяю внимание изучению передовых методик разработки, анализу успешных игровых проектов и совершенствованию навыков в области игрового дизайна и проектирования пользовательского опыта.",
+                "skills.unity": "Разработка на Unity",
+                "skills.unity_desc": "Полный цикл разработки игровых проектов",
+                "skills.csharp": "Программирование на C#",
+                "skills.csharp_desc": "Оптимизированный и структурированный код",
+                "skills.ui": "UI/UX системы",
+                "skills.ui_desc": "Создание интуитивных интерфейсов",
+                "skills.design": "Game Design",
+                "skills.design_desc": "Проектирование игровых механик",
+                "experience.title": "Опыт и развитие",
+                "experience.job1.title": "Профессиональный разработчик Unity",
+                "experience.job1.desc": "Создание полных игровых проектов, реализация сложной игровой механики и архитектурных решений.",
+                "experience.job2.title": "Активное изучение Unity и C#",
+                "experience.job2.desc": "Глубокое освоение игрового движка Unity, языка программирования C# и основ геймдев-разработки.",
+                "experience.job3.title": "Начало пути в программировании",
+                "experience.job3.desc": "Изучение основ программирования и принципов разработки программного обеспечения.",
+                "contact.title": "Свяжитесь со мной",
+                "contact.message": "Заинтересованы в сотрудничестве или есть проект?",
+                "contact.email": "Написать на почту",
+                "visitors": "посетителей"
+            }
+        };
+
+        let currentLanguage = 'ru';
+        const languageToggle = document.getElementById('languageToggle');
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update language toggle icon/text if needed
+            const icon = languageToggle.querySelector('i');
+            if (lang === 'en') {
+                icon.className = 'fas fa-language';
+            } else {
+                icon.className = 'fas fa-globe-americas';
+            }
+            
+            // Save language preference
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        languageToggle.addEventListener('click', () => {
+            setLanguage(currentLanguage === 'en' ? 'ru' : 'en');
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.setAttribute('data-theme', 
+                document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+            
+            themeIcon.classList.toggle('fa-moon');
+            themeIcon.classList.toggle('fa-sun');
+            
+            // Save theme preference
+            localStorage.setItem('preferredTheme', document.body.getAttribute('data-theme'));
+        });
+        
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+        
+        // Navigation dots functionality
+        const dots = document.querySelectorAll('.dot');
+        const sections = document.querySelectorAll('section');
+        const navLinksItems = document.querySelectorAll('.nav-link');
+        
+        function updateActiveSection() {
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            dots.forEach(dot => {
+                dot.classList.toggle('active', dot.getAttribute('data-section') === currentSection);
+            });
+            
+            navLinksItems.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href').substring(1) === currentSection);
+            });
+        }
+        
+        window.addEventListener('scroll', updateActiveSection);
+        
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const sectionId = dot.getAttribute('data-section');
+                document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        
+        // Smooth scrolling for navigation links
+        navLinksItems.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
+                
+                // Close mobile menu after clicking
+                if (window.innerWidth <= 992) {
+                    navLinks.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+        });
+        
+        // Visitor counter functionality
+        const visitorCountElement = document.getElementById('visitorCount');
+        
+        // Initialize visitor count from localStorage or set to 0
+        let visitorCount = localStorage.getItem('visitorCount') || 0;
+        
+        // Check if this is a new session
+        if (!sessionStorage.getItem('visited')) {
+            visitorCount++;
+            localStorage.setItem('visitorCount', visitorCount);
+            sessionStorage.setItem('visited', 'true');
+        }
+        
+        // Animate the counter
+        let currentCount = 0;
+        const targetCount = visitorCount;
+        const duration = 2000; // 2 seconds
+        const frameDuration = 1000 / 60; // 60 fps
+        const totalFrames = Math.round(duration / frameDuration);
+        let frame = 0;
+        
+        const counter = setInterval(() => {
+            frame++;
+            const progress = frame / totalFrames;
+            currentCount = Math.round(targetCount * progress);
+            
+            visitorCountElement.textContent = currentCount;
+            
+            if (frame === totalFrames) {
+                clearInterval(counter);
+            }
+        }, frameDuration);
+        
+        // Particles system
+        const particlesContainer = document.getElementById('particles');
+        const particlesToggle = document.getElementById('particlesToggle');
+        let particlesEnabled = true;
+        
+        function createParticles() {
+            if (!particlesEnabled) return;
+            
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Random properties
+            const size = Math.random() * 3 + 1;
+            const posX = Math.random() * 100;
+            const duration = Math.random() * 10 + 5;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${posX}vw`;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${Math.random() * 5}s`;
+            
+            particlesContainer.appendChild(particle);
+            
+            // Remove particle after animation completes
+            setTimeout(() => {
+                particle.remove();
+            }, duration * 1000);
+        }
+        
+        // Create particles at intervals
+        let particlesInterval = setInterval(createParticles, 200);
+        
+        particlesToggle.addEventListener('click', () => {
+            particlesEnabled = !particlesEnabled;
+            
+            if (particlesEnabled) {
+                particlesInterval = setInterval(createParticles, 200);
+                particlesToggle.innerHTML = '<i class="fas fa-star"></i>';
+            } else {
+                clearInterval(particlesInterval);
+                particlesToggle.innerHTML = '<i class="far fa-star"></i>';
+            }
+        });
+        
+        // Fade-in animation for elements
+        function checkFadeElements() {
+            document.querySelectorAll('.fade-in').forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', checkFadeElements);
+        window.addEventListener('load', checkFadeElements);
+        
+        // Parallax effect for tech background
+        document.addEventListener('mousemove', (e) => {
+            const techBg = document.querySelector('.tech-bg');
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            
+            techBg.style.transform = `translateX(${xAxis}px) translateY(${yAxis}px)`;
+        });
+        
+        // Initialize animations and preferences
+        window.addEventListener('load', () => {
+            // Animate timeline items
+            document.querySelectorAll('.timeline-item').forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 300 * index);
+            });
+            
+            // Load saved preferences
+            const savedTheme = localStorage.getItem('preferredTheme');
+            if (savedTheme) {
+                document.body.setAttribute('data-theme', savedTheme);
+                if (savedTheme === 'light') {
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                }
+            }
+            
+            const savedLanguage = localStorage.getItem('preferredLanguage');
+            if (savedLanguage) {
+                setLanguage(savedLanguage);
+            }
+        });
+    </script>
+</body>
+</html>
