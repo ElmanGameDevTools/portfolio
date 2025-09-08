@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Elaman Mirzabekov - GameDev Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -48,6 +48,7 @@
             line-height: 1.6;
             perspective: 1000px;
             transition: background-color var(--transition-slow);
+            overscroll-behavior-y: contain; /* Prevent pull-to-refresh on mobile */
         }
 
         .container {
@@ -765,6 +766,19 @@
                 transform: translateX(-50%);
                 font-size: 0.8rem;
             }
+            
+            /* Prevent zoom on input focus on mobile */
+            input, textarea, select {
+                font-size: 16px; /* Prevents zoom on focus */
+            }
+            
+            /* Improve touch targets */
+            .nav-link, .tech-badge, .control-btn {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
         }
 
         @media (max-width: 480px) {
@@ -965,6 +979,26 @@
     </div>
 
     <script>
+        // Fix for mobile scroll jump issue
+        let scrollPosition = 0;
+        let isResizing = false;
+
+        window.addEventListener('scroll', function() {
+            scrollPosition = window.scrollY;
+        });
+
+        window.addEventListener('resize', function() {
+            if (!isResizing) {
+                isResizing = true;
+                
+                // Timeout to ensure the resize is complete (especially for keyboard hide)
+                setTimeout(function() {
+                    window.scrollTo(0, scrollPosition);
+                    isResizing = false;
+                }, 100);
+            }
+        });
+
         // Language support
         const translations = {
             en: {
